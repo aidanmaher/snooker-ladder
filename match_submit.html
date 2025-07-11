@@ -46,61 +46,63 @@
     <button type="submit">Submit Match</button>
   </form>
 
-  <script>
-    // 1) Your real Sheet ID (from the edit-mode URL):
-    const SHEET_ID = '1zaW4RrgVFANKEh2VWVC8rRFUA108X4mxAFBUh0CkHZE';
+<script>
+  const SHEET_ID = '1zaW4RrgVFANKEh2VWVC8rRFUA108X4mxAFBUh0CkHZE';
+  const SHEET_NAME = 'Players';
 
-    // 2) Build the published URL that Tabletop.js needs
-    const PUBLIC_URL = 
-      `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pubhtml`;
+  // Build the gviz URL (this returns a JS function call wrapping JSON)
+  const GVIZ_URL = 
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?` +
+    `sheet=${encodeURIComponent(SHEET_NAME)}&headers=1`;
 
-    // 3) When page loads, init Tabletop
-    window.addEventListener('DOMContentLoaded', () => {
-      Tabletop.init({
-        key: PUBLIC_URL,
-        callback: showPlayers,
-        simpleSheet: false,
-        wanted: ['Players'],
-        debug: true
-      });
-    });
+  // grabs your <select> elements
+  const selA = document.getElementById('playerA');
+  const selB = document.getElementById('playerB');
+  const selW = document.getElementById('winner');
 
-    // 4) Populate the three dropdowns
-    function showPlayers(data, tabletop) {
-      console.log('Loaded via Tabletop:', tabletop);
+  // on page load, fetch & populate
+  window.addEventListener('DOMContentLoaded', () => {
+    fetch(GVIZ_URL)
+      .then(r => r.text())
+      .then(txt => {
+        // strip the Google wrapper: "google.visualization.Query.setResponse(...);"
+        const json = JSON.parse(
+          txt.match(/setResponse\(([\s\S]+)\)/)[1]
+        );
 
-      // Grab rows from the "Players" tab
-      const players = tabletop.sheets('Players').all();
+        // the table schema
+        const cols = json.table.cols.map(c => c.label);
+        const rows = json.table.rows.map(r => r.c.map(cell => (cell||{}).v));
 
-      // References to the <select> elements
-      const selA = document.getElementById('playerA');
-      const selB = document.getElementById('playerB');
-      const selW = document.getElementById('winner');
+        // find the "Name" column index
+        const nameCol = cols.indexOf('Name');
+        if (nameCol < 0) throw new Error('No "Name" column found');
 
-      // Replace "Loading…" with a disabled placeholder
-      [selA, selB, selW].forEach(sel => {
-        sel.innerHTML = '';
-        const placeholder = document.createElement('option');
-        placeholder.disabled = true;
-        placeholder.selected = true;
-        placeholder.textContent = 'Select…';
-        sel.appendChild(placeholder);
-      });
-
-      // Inject one option per player name
-      players.forEach(row => {
-        const name = row.Name; // B1 in your sheet must read exactly "Name"
-        if (!name) return;     // skip blank rows
-
+        // clear loading placeholder
         [selA, selB, selW].forEach(sel => {
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          sel.appendChild(opt);
+          sel.innerHTML = '<option disabled selected>Select…</option>';
+        });
+
+        // inject each player into all three dropdowns
+        rows.forEach(row => {
+          const name = row[nameCol];
+          if (!name) return;
+          [selA, selB, selW].forEach(sel => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            sel.appendChild(opt);
+          });
+        });
+      })
+      .catch(err => {
+        console.error('Error loading Players:', err);
+        [selA, selB, selW].forEach(sel => {
+          sel.innerHTML = '<option>Error loading names</option>';
         });
       });
-    }
-  </script>
+  });
+</script>
 
 </body>
 </html>
