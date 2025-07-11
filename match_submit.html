@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Snooker Match Submission</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
+    label { display: block; margin-top: 15px; }
+    select, input { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 20px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+
+  <h1>🎱 Record a Match</h1>
+
+  <form id="matchForm">
+    <label for="playerA">Player A:</label>
+    <select id="playerA"><option>Loading…</option></select>
+
+    <label for="playerB">Player B:</label>
+    <select id="playerB"><option>Loading…</option></select>
+
+    <label for="matchDate">Match Date:</label>
+    <input type="date" id="matchDate" required>
+
+    <label for="winner">Winner:</label>
+    <select id="winner"><option>Loading…</option></select>
+
+    <label for="score">Winning Score:</label>
+    <input type="text" id="score" placeholder="e.g. 3-1">
+
+    <label for="pointsA">Total Points (Player A):</label>
+    <input type="number" id="pointsA">
+
+    <label for="pointsB">Total Points (Player B):</label>
+    <input type="number" id="pointsB">
+
+    <label for="highBreakA">High Break (Player A):</label>
+    <input type="number" id="highBreakA">
+
+    <label for="highBreakB">High Break (Player B):</label>
+    <input type="number" id="highBreakB">
+
+    <button type="submit">Submit Match</button>
+  </form>
+
+  <script>
+    // 1) Your real Sheet ID (from the edit-mode URL):
+    const SHEET_ID = '1zaW4RrgVFANKEh2VWVC8rRFUA108X4mxAFBUh0CkHZE';
+
+    // 2) Build the published URL that Tabletop.js needs
+    const PUBLIC_URL = 
+      `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pubhtml`;
+
+    // 3) When page loads, init Tabletop
+    window.addEventListener('DOMContentLoaded', () => {
+      Tabletop.init({
+        key: PUBLIC_URL,
+        callback: showPlayers,
+        simpleSheet: false,
+        wanted: ['Players'],
+        debug: true
+      });
+    });
+
+    // 4) Populate the three dropdowns
+    function showPlayers(data, tabletop) {
+      console.log('Loaded via Tabletop:', tabletop);
+
+      // Grab rows from the "Players" tab
+      const players = tabletop.sheets('Players').all();
+
+      // References to the <select> elements
+      const selA = document.getElementById('playerA');
+      const selB = document.getElementById('playerB');
+      const selW = document.getElementById('winner');
+
+      // Replace "Loading…" with a disabled placeholder
+      [selA, selB, selW].forEach(sel => {
+        sel.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        placeholder.textContent = 'Select…';
+        sel.appendChild(placeholder);
+      });
+
+      // Inject one option per player name
+      players.forEach(row => {
+        const name = row.Name; // B1 in your sheet must read exactly "Name"
+        if (!name) return;     // skip blank rows
+
+        [selA, selB, selW].forEach(sel => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          sel.appendChild(opt);
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>
