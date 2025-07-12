@@ -146,8 +146,12 @@
 <iframe 
   name="submitFrame" 
   style="display:none;" 
-  onload="document.getElementById('loadingMsg').style.display = 'none';"
+  onload="
+    document.getElementById('loadingMsg').style.display = 'none';
+    document.getElementById('matchForm').reset();
+  "
 ></iframe>
+
 
   </div>
 <script>
