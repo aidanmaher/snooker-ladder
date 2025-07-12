@@ -6,33 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-  .loading {
-  margin-top: 20px;
-  padding: 12px;
-  background: #fff9e6;
-  border-left: 4px solid #ffaa00;
-  font-weight: 500;
-  text-align: center;
-  border-radius: var(--radius);
-  font-size: 0.95rem;
-}
-
-.dots::after {
-  content: '';
-  display: inline-block;
-  width: 1em;
-  text-align: left;
-  animation: dots 1.5s steps(4, end) infinite;
-}
-
-@keyframes dots {
-  0% { content: ''; }
-  25% { content: '.'; }
-  50% { content: '..'; }
-  75% { content: '...'; }
-  100% { content: ''; }
-}
-
     :root {
       --green: #007a5e;
       --gray:  #555;
@@ -99,15 +72,81 @@
     button:hover {
       background: #005b46;
     }
+
+    .loading {
+      margin-top: 20px;
+      padding: 12px;
+      background: #fff9e6;
+      border-left: 4px solid #ffaa00;
+      font-weight: 500;
+      text-align: center;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+    }
+    .dots::after {
+      content: '';
+      display: inline-block;
+      width: 1em;
+      text-align: left;
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+    @keyframes dots {
+      0%   { content: ''; }
+      25%  { content: '.'; }
+      50%  { content: '..'; }
+      75%  { content: '...'; }
+      100% { content: ''; }
+    }
+
+    #confirmation {
+      margin-top: 20px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: #007a5e;
+      font-size: 1rem;
+      display: none;
+    }
+    .cue-ball {
+      width: 30px;
+      height: 30px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      animation: bounceBall 0.6s ease-out forwards;
+    }
+    .text {
+      animation: glowText 1s ease-in-out forwards;
+    }
+    .bounce .cue-ball {
+      animation: bounceBall 0.6s ease-out;
+    }
+    .bounce .text {
+      animation: glowText 0.8s ease-in-out;
+    }
+    @keyframes bounceBall {
+      0%   { transform: translateY(0) scale(1); }
+      30%  { transform: translateY(-30px) scale(1.1); }
+      60%  { transform: translateY(-15px) scale(0.95); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    @keyframes glowText {
+      0%   { opacity: 0; transform: scale(0.9); }
+      40%  { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="card-header">🎱 Record Match 🎱</div>
+    <div class="card-header">🎱 Record a Match 🎱</div>
     <div class="card-body">
       <form 
+        id="matchForm" 
         method="post" 
-        action="https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec"
+        action="https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec" 
         target="submitFrame"
       >
         <label for="playerA">Player A</label>
@@ -139,29 +178,30 @@
 
         <button type="submit">Submit Match</button>
       </form>
-<div id="loadingMsg" class="loading" style="display:none;">
-  Submitting match<span class="dots"></span>
-</div>
 
-<iframe 
-  name="submitFrame" 
-  style="display:none;" 
-  onload="
-    document.getElementById('loadingMsg').style.display = 'none';
-    document.getElementById('matchForm').reset();
-  "
-></iframe>
+      <div id="loadingMsg" class="loading" style="display:none;">
+        Submitting match<span class="dots"></span>
+      </div>
 
+      <div id="confirmation" class="bounce">
+        <div class="cue-ball"></div>
+        <div class="text">✅ Match Logged!</div>
+      </div>
 
+      <iframe 
+        name="submitFrame" 
+        style="display:none;" 
+        onload="
+          document.getElementById('loadingMsg').style.display = 'none';
+          document.getElementById('matchForm').reset();
+          const conf = document.getElementById('confirmation');
+          conf.style.display = 'flex';
+          conf.classList.remove('bounce'); void conf.offsetWidth; conf.classList.add('bounce');
+          setTimeout(() => conf.style.display = 'none', 2500);
+        "
+      ></iframe>
+    </div>
   </div>
-<script>
-  const form = document.querySelector('form');
-  const loadingMsg = document.getElementById('loadingMsg');
-
-  form.addEventListener('submit', () => {
-    loadingMsg.style.display = 'block';
-  });
-</script>
 
   <script>
     const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
@@ -188,11 +228,3 @@
       });
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const script = document.createElement('script');
-      script.src = JSONP_URL;
-      document.body.appendChild(script);
-    });
-  </script>
-</body>
-</html>
