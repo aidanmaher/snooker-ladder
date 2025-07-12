@@ -141,7 +141,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="card-header">🎱 Record Match 🎱</div>
+    <div class="card-header">🎱 Record a Match 🎱</div>
     <div class="card-body">
       <form 
         id="matchForm" 
@@ -203,30 +203,34 @@
     </div>
   </div>
 
-  <script>
-    const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
-    const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Players&headers=1&tqx=responseHandler:populateNames`;
-    const selA = document.getElementById('playerA');
-    const selB = document.getElementById('playerB');
-    const selW = document.getElementById('winner');
+<script>
+  const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
+  const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Players&headers=1&tqx=responseHandler:populateNames`;
+  const selA = document.getElementById('playerA');
+  const selB = document.getElementById('playerB');
+  const selW = document.getElementById('winner');
 
-    function populateNames(resp) {
-      const cols = resp.table.cols.map(c => c.label);
-      const rows = resp.table.rows.map(r => r.c.map(c => c?.v));
-      const nameIdx = cols.indexOf('Name');
-      [selA, selB, selW].forEach(sel => {
-        sel.innerHTML = '<option disabled selected>Select…</option>';
-        rows.forEach(row => {
-          const name = row[nameIdx];
-          if (name) {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            sel.appendChild(opt);
-          }
-        });
+  function populateNames(resp) {
+    const cols = resp.table.cols.map(c => c.label);
+    const rows = resp.table.rows.map(r => r.c.map(c => c?.v));
+    const nameIdx = cols.indexOf('Name');
+    [selA, selB, selW].forEach(sel => {
+      sel.innerHTML = '<option disabled selected>Select…</option>';
+      rows.forEach(row => {
+        const name = row[nameIdx];
+        if (name) {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          sel.appendChild(opt);
+        }
       });
-    }
+    });
+  }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const script = document.create
+  window.addEventListener('DOMContentLoaded', () => {
+    const script = document.createElement('script');
+    script.src = JSONP_URL;
+    document.body.appendChild(script);
+  });
+</script>
