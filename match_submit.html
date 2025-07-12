@@ -81,7 +81,7 @@
       <form 
         method="post" 
         action="https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec"
-        target="_blank"
+        target="submitFrame"
       >
         <label for="playerA">Player A</label>
         <select name="playerA" id="playerA"><option>Loading…</option></select>
@@ -112,6 +112,8 @@
 
         <button type="submit">Submit Match</button>
       </form>
+      <iframe name="submitFrame" style="display:none;"></iframe>
+
     </div>
   </div>
 
