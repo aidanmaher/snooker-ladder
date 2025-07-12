@@ -4,12 +4,7 @@
   <meta charset="utf-8">
   <title>Snooker Club – Record a Match</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  
-  <!-- Google Font -->
-  <link 
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" 
-    rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --green: #007a5e;
@@ -18,9 +13,7 @@
       --bg:    #f9f9f9;
       --radius: 6px;
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
@@ -30,16 +23,13 @@
       display: flex;
       justify-content: center;
     }
-
     .card {
       background: #fff;
       border-radius: var(--radius);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       max-width: 480px;
       width: 100%;
-      overflow: hidden;
     }
-
     .card-header {
       background: var(--green);
       color: #fff;
@@ -48,21 +38,15 @@
       font-size: 1.5rem;
       font-weight: 600;
     }
-
     .card-body {
       padding: 24px;
     }
-
     label {
       display: block;
       margin-top: 16px;
       font-weight: 500;
     }
-
-    input[type="date"],
-    input[type="text"],
-    input[type="number"],
-    select {
+    input, select {
       width: 100%;
       padding: 10px 12px;
       margin-top: 6px;
@@ -72,16 +56,12 @@
       background: #fff;
       transition: border-color .2s, box-shadow .2s;
     }
-
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: var(--green);
       box-shadow: 0 0 0 3px rgba(0,122,94,0.2);
     }
-
     button {
-      display: block;
       width: 100%;
       margin-top: 24px;
       padding: 12px;
@@ -94,91 +74,124 @@
       cursor: pointer;
       transition: background .2s;
     }
-
     button:hover {
       background: #005b46;
     }
   </style>
 </head>
-
 <body>
   <div class="card">
     <div class="card-header">🎱 Record a Match</div>
     <div class="card-body">
 
-<form 
-  id="matchForm"
-  method="post"
-  action="https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec"  <!-- ← paste your Apps Script URL here -->
->
-  <label>Player A</label>
-  <select name="playerA" id="playerA">…</select>
+      <!-- ✅ remove 'method' and 'action' to rely purely on JavaScript -->
+      <form id="matchForm">
+        <label for="playerA">Player A</label>
+        <select name="playerA" id="playerA"><option>Loading…</option></select>
 
-  <label>Player B</label>
-  <select name="playerB" id="playerB">…</select>
+        <label for="playerB">Player B</label>
+        <select name="playerB" id="playerB"><option>Loading…</option></select>
 
-  <label>Match Date</label>
-  <input type="date" name="matchDate" id="matchDate" required>
+        <label for="matchDate">Match Date</label>
+        <input type="date" name="matchDate" id="matchDate" required>
 
-  <label>Winner</label>
-  <select name="winner" id="winner">…</select>
+        <label for="winner">Winner</label>
+        <select name="winner" id="winner"><option>Loading…</option></select>
 
-  <label>Winning Score</label>
-  <input type="text" name="score" id="score">
+        <label for="score">Winning Score</label>
+        <input type="text" name="score" id="score">
 
-  <label>Total Points (Player A)</label>
-  <input type="number" name="pointsA" id="pointsA">
+        <label for="pointsA">Total Points (Player A)</label>
+        <input type="number" name="pointsA" id="pointsA">
 
-  <label>Total Points (Player B)</label>
-  <input type="number" name="pointsB" id="pointsB">
+        <label for="pointsB">Total Points (Player B)</label>
+        <input type="number" name="pointsB" id="pointsB">
 
-  <label>High Break (Player A)</label>
-  <input type="number" name="highBreakA" id="highBreakA">
+        <label for="highBreakA">High Break (Player A)</label>
+        <input type="number" name="highBreakA" id="highBreakA">
 
-  <label>High Break (Player B)</label>
-  <input type="number" name="highBreakB" id="highBreakB">
+        <label for="highBreakB">High Break (Player B)</label>
+        <input type="number" name="highBreakB" id="highBreakB">
 
-  <button type="submit">Submit Match</button>
-</form>
+        <button type="submit">Submit Match</button>
+      </form>
 
     </div>
   </div>
 
-<script>
-  const form = document.getElementById('matchForm');
+  <script>
+    // ✅ populate the player list from your published Google Sheet
+    const SHEET_ID   = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
+    const SHEET_NAME = 'Players';
+    const JSONP_URL =
+      `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?` +
+      `sheet=${encodeURIComponent(SHEET_NAME)}&headers=1&tqx=responseHandler:loadPlayers`;
 
-  form.addEventListener('submit', function(event) {
-    event.preventDefault(); // stop normal submission
+    const selA = document.getElementById('playerA');
+    const selB = document.getElementById('playerB');
+    const selW = document.getElementById('winner');
 
-    const formData = new FormData(form);
+    function loadPlayers(resp) {
+      const cols = resp.table.cols.map(c => c.label);
+      const rows = resp.table.rows.map(r => r.c.map(c => c?.v));
+      const nameIdx = cols.indexOf('Name');
+      if (nameIdx < 0) return;
 
-    fetch('https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.ok ? res.text() : Promise.reject(res))
-    .then(() => {
-      // Clear form
-      form.reset();
+      [selA, selB, selW].forEach(sel => {
+        sel.innerHTML = '<option disabled selected>Select…</option>';
+      });
 
-      // Replace button with success banner
-      const successMsg = document.createElement('div');
-      successMsg.textContent = '✅ Match submitted!';
-      successMsg.style = `
-        margin-top: 20px;
-        padding: 12px;
-        text-align: center;
-        background: #e6f7f3;
-        border-radius: 6px;
-        color: #007a5e;
-        font-weight: 600;
-      `;
-      form.appendChild(successMsg);
-    })
-    .catch(err => {
-      alert('Error submitting match: ' + err.statusText || err);
+      rows.forEach(row => {
+        const name = row[nameIdx];
+        if (!name) return;
+        [selA, selB, selW].forEach(sel => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    // ✅ inject the JSONP script on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const script = document.createElement('script');
+      script.src = JSONP_URL;
+      document.body.appendChild(script);
     });
-  });
-</script>
+
+    // ✅ handle form submission via JavaScript
+    const form = document.getElementById('matchForm');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+
+      fetch('https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.ok ? res.text() : Promise.reject(res))
+      .then(() => {
+        form.reset();
+        const success = document.createElement('div');
+        success.textContent = '✅ Match submitted!';
+        success.style = `
+          margin-top: 20px;
+          padding: 12px;
+          text-align: center;
+          background: #e6f7f3;
+          border-radius: 6px;
+          color: #007a5e;
+          font-weight: 600;
+        `;
+        form.appendChild(success);
+      })
+      .catch(err => {
+        alert('Error submitting match: ' + (err.statusText || err));
+      });
+    });
+  </script>
 </body>
 </html>
