@@ -144,47 +144,41 @@
     </div>
   </div>
 
-  <script>
-    const SHEET_ID   = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
-    const SHEET_NAME = 'Players';
-    const GVIZ_URL = 
-      `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?` +
-      `sheet=${encodeURIComponent(SHEET_NAME)}&headers=1`;
+<script>
+  const form = document.getElementById('matchForm');
 
-    const selA = document.getElementById('playerA');
-    const selB = document.getElementById('playerB');
-    const selW = document.getElementById('winner');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // stop normal submission
 
-    // Populate dropdowns on load
-    window.addEventListener('DOMContentLoaded', () => {
-      fetch(GVIZ_URL)
-        .then(r => r.text())
-        .then(txt => {
-          const json = JSON.parse(txt
-            .match(/setResponse\(([\s\S]+)\);$/)[1]);
-          const cols = json.table.cols.map(c => c.label);
-          const rows = json.table.rows.map(r => r.c.map(c=>c&&c.v));
-          const nameIdx = cols.indexOf('Name');
+    const formData = new FormData(form);
 
-          [selA, selB, selW].forEach(sel => {
-            sel.innerHTML = '<option disabled selected>Select…</option>';
-          });
+    fetch('https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.ok ? res.text() : Promise.reject(res))
+    .then(() => {
+      // Clear form
+      form.reset();
 
-          rows.forEach(row => {
-            const nm = row[nameIdx];
-            if (!nm) return;
-            [selA, selB, selW].forEach(sel => {
-              const opt = document.createElement('option');
-              opt.value = nm;
-              opt.textContent = nm;
-              sel.appendChild(opt);
-            });
-          });
-        })
-        .catch(err => {
-          console.error('Error loading Players:', err);
-        });
+      // Replace button with success banner
+      const successMsg = document.createElement('div');
+      successMsg.textContent = '✅ Match submitted!';
+      successMsg.style = `
+        margin-top: 20px;
+        padding: 12px;
+        text-align: center;
+        background: #e6f7f3;
+        border-radius: 6px;
+        color: #007a5e;
+        font-weight: 600;
+      `;
+      form.appendChild(successMsg);
+    })
+    .catch(err => {
+      alert('Error submitting match: ' + err.statusText || err);
     });
-  </script>
+  });
+</script>
 </body>
 </html>
