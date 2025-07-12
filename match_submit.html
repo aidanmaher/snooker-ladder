@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Snooker Club – Record a Match</title>
+  <title>Snooker Club – Record Match</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --green: #007a5e;
-      --gray:  #555;
-      --bg:    #f9f9f9;
+      --gray: #555;
+      --bg: #f9f9f9;
       --radius: 6px;
     }
     body {
@@ -72,7 +72,6 @@
     button:hover {
       background: #005b46;
     }
-
     .loading {
       margin-top: 20px;
       padding: 12px;
@@ -91,13 +90,12 @@
       animation: dots 1.5s steps(4, end) infinite;
     }
     @keyframes dots {
-      0%   { content: ''; }
-      25%  { content: '.'; }
-      50%  { content: '..'; }
-      75%  { content: '...'; }
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
       100% { content: ''; }
     }
-
     #confirmation {
       margin-top: 20px;
       justify-content: center;
@@ -115,7 +113,6 @@
       border: 2px solid #ccc;
       border-radius: 50%;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      animation: bounceBall 0.6s ease-out forwards;
     }
     .text {
       animation: glowText 1s ease-in-out forwards;
@@ -192,23 +189,33 @@
         name="submitFrame" 
         style="display:none;" 
         onload="
-          document.getElementById('loadingMsg').style.display = 'none';
-          document.getElementById('matchForm').reset();
-          const conf = document.getElementById('confirmation');
-          conf.style.display = 'flex';
-          conf.classList.remove('bounce'); void conf.offsetWidth; conf.classList.add('bounce');
-          setTimeout(() => conf.style.display = 'none', 2500);
+          if (window.formSubmitted) {
+            document.getElementById('loadingMsg').style.display = 'none';
+            document.getElementById('matchForm').reset();
+            const conf = document.getElementById('confirmation');
+            conf.style.display = 'flex';
+            conf.classList.remove('bounce'); void conf.offsetWidth; conf.classList.add('bounce');
+            setTimeout(() => conf.style.display = 'none', 2500);
+            window.formSubmitted = false;
+          }
         "
       ></iframe>
     </div>
   </div>
 
-<script>
-  const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
-  const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Players&headers=1&tqx=responseHandler:populateNames`;
-  const selA = document.getElementById('playerA');
-  const selB = document.getElementById('playerB');
-  const selW = document.getElementById('winner');
+  <script>
+    window.formSubmitted = false;
+
+    document.getElementById('matchForm').addEventListener('submit', () => {
+      window.formSubmitted = true;
+      document.getElementById('loadingMsg').style.display = 'block';
+    });
+
+    const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
+    const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Players&headers=1&tqx=responseHandler:populateNames`;
+    const selA = document.getElementById('playerA');
+    const selB = document.getElementById('playerB');
+    const selW = document.getElementById('winner');
 
   function populateNames(resp) {
     const cols = resp.table.cols.map(c => c.label);
