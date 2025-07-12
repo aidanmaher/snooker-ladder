@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>Snooker Club – Record a Match</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --green: #007a5e;
-      --green-light: #e6f7f3;
-      --gray:  #555;
-      --bg:    #f9f9f9;
+      --gray: #555;
+      --bg: #f9f9f9;
       --radius: 6px;
     }
-    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      color: var(--gray);
       background: var(--bg);
-      padding: 20px;
+      color: var(--gray);
       display: flex;
       justify-content: center;
+      padding: 20px;
     }
     .card {
       background: #fff;
@@ -46,36 +44,42 @@
       margin-top: 16px;
       font-weight: 500;
     }
-    input, select {
+    select, input {
       width: 100%;
-      padding: 10px 12px;
+      padding: 10px;
       margin-top: 6px;
       border: 1px solid #ccc;
       border-radius: var(--radius);
       font-size: 1rem;
-      background: #fff;
-      transition: border-color .2s, box-shadow .2s;
     }
     input:focus, select:focus {
       outline: none;
       border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(0,122,94,0.2);
+      box-shadow: 0 0 0 2px rgba(0,122,94,0.2);
     }
     button {
       width: 100%;
       margin-top: 24px;
       padding: 12px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
-      color: #fff;
+      color: white;
       background: var(--green);
       border: none;
       border-radius: var(--radius);
       cursor: pointer;
-      transition: background .2s;
     }
     button:hover {
       background: #005b46;
+    }
+    .success {
+      margin-top: 24px;
+      padding: 12px;
+      background: #e6f7f3;
+      border-radius: var(--radius);
+      text-align: center;
+      color: var(--green);
+      font-weight: 600;
     }
   </style>
 </head>
@@ -83,8 +87,6 @@
   <div class="card">
     <div class="card-header">🎱 Record a Match</div>
     <div class="card-body">
-
-      <!-- ✅ remove 'method' and 'action' to rely purely on JavaScript -->
       <form id="matchForm">
         <label for="playerA">Player A</label>
         <select name="playerA" id="playerA"><option>Loading…</option></select>
@@ -93,79 +95,68 @@
         <select name="playerB" id="playerB"><option>Loading…</option></select>
 
         <label for="matchDate">Match Date</label>
-        <input type="date" name="matchDate" id="matchDate" required>
+        <input type="date" name="matchDate" id="matchDate" required />
 
         <label for="winner">Winner</label>
         <select name="winner" id="winner"><option>Loading…</option></select>
 
         <label for="score">Winning Score</label>
-        <input type="text" name="score" id="score">
+        <input type="text" name="score" id="score" placeholder="e.g. 3-1" />
 
         <label for="pointsA">Total Points (Player A)</label>
-        <input type="number" name="pointsA" id="pointsA">
+        <input type="number" name="pointsA" id="pointsA" />
 
         <label for="pointsB">Total Points (Player B)</label>
-        <input type="number" name="pointsB" id="pointsB">
+        <input type="number" name="pointsB" id="pointsB" />
 
         <label for="highBreakA">High Break (Player A)</label>
-        <input type="number" name="highBreakA" id="highBreakA">
+        <input type="number" name="highBreakA" id="highBreakA" />
 
         <label for="highBreakB">High Break (Player B)</label>
-        <input type="number" name="highBreakB" id="highBreakB">
+        <input type="number" name="highBreakB" id="highBreakB" />
 
         <button type="submit">Submit Match</button>
       </form>
-
+      <div id="statusMsg" class="success" style="display:none;"></div>
     </div>
   </div>
 
   <script>
-    // ✅ populate the player list from your published Google Sheet
-    const SHEET_ID   = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
-    const SHEET_NAME = 'Players';
-    const JSONP_URL =
-      `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?` +
-      `sheet=${encodeURIComponent(SHEET_NAME)}&headers=1&tqx=responseHandler:loadPlayers`;
-
+    const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
+    const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Players&headers=1&tqx=responseHandler:populateNames`;
     const selA = document.getElementById('playerA');
     const selB = document.getElementById('playerB');
     const selW = document.getElementById('winner');
 
-    function loadPlayers(resp) {
+    function populateNames(resp) {
       const cols = resp.table.cols.map(c => c.label);
       const rows = resp.table.rows.map(r => r.c.map(c => c?.v));
       const nameIdx = cols.indexOf('Name');
-      if (nameIdx < 0) return;
-
       [selA, selB, selW].forEach(sel => {
         sel.innerHTML = '<option disabled selected>Select…</option>';
-      });
-
-      rows.forEach(row => {
-        const name = row[nameIdx];
-        if (!name) return;
-        [selA, selB, selW].forEach(sel => {
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          sel.appendChild(opt);
+        rows.forEach(row => {
+          const name = row[nameIdx];
+          if (name) {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            sel.appendChild(opt);
+          }
         });
       });
     }
 
-    // ✅ inject the JSONP script on page load
     window.addEventListener('DOMContentLoaded', () => {
       const script = document.createElement('script');
       script.src = JSONP_URL;
       document.body.appendChild(script);
     });
 
-    // ✅ handle form submission via JavaScript
     const form = document.getElementById('matchForm');
+    const status = document.getElementById('statusMsg');
 
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
       const formData = new FormData(form);
 
       fetch('https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec', {
@@ -175,21 +166,12 @@
       .then(res => res.ok ? res.text() : Promise.reject(res))
       .then(() => {
         form.reset();
-        const success = document.createElement('div');
-        success.textContent = '✅ Match submitted!';
-        success.style = `
-          margin-top: 20px;
-          padding: 12px;
-          text-align: center;
-          background: #e6f7f3;
-          border-radius: 6px;
-          color: #007a5e;
-          font-weight: 600;
-        `;
-        form.appendChild(success);
+        status.textContent = '✅ Match submitted successfully!';
+        status.style.display = 'block';
       })
       .catch(err => {
-        alert('Error submitting match: ' + (err.statusText || err));
+        status.textContent = '❌ Submission failed. Please try again.';
+        status.style.display = 'block';
       });
     });
   </script>
