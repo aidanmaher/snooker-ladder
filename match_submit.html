@@ -112,6 +112,12 @@
 
         <button type="submit">Submit Match</button>
       </form>
+      <div id="loadingMsg" class="loading" style="display:none;">
+  ⏳ Submitting match, please wait…
+</div>
+
+<iframe name="submitFrame" style="display:none;" onload="document.getElementById('loadingMsg').style.display = 'none';"></iframe>
+
       <iframe name="submitFrame" style="display:none;"></iframe>
 
     </div>
