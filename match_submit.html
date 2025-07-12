@@ -6,6 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+  .loading {
+  margin-top: 20px;
+  padding: 12px;
+  background: #fff9e6;
+  border-left: 4px solid #ffaa00;
+  font-weight: 500;
+  text-align: center;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+}
+
+.dots::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  text-align: left;
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+  100% { content: ''; }
+}
+
     :root {
       --green: #007a5e;
       --gray:  #555;
@@ -76,7 +103,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="card-header">🎱 Record a Match 🎱</div>
+    <div class="card-header">🎱 Record Match 🎱</div>
     <div class="card-body">
       <form 
         method="post" 
@@ -112,14 +139,25 @@
 
         <button type="submit">Submit Match</button>
       </form>
-      <div id="loadingMsg" class="loading" style="display:none;">
-  ⏳ Submitting match, please wait…
+<div id="loadingMsg" class="loading" style="display:none;">
+  Submitting match<span class="dots"></span>
 </div>
 
-<iframe name="submitFrame" style="display:none;" onload="document.getElementById('loadingMsg').style.display = 'none';"></iframe>
+<iframe 
+  name="submitFrame" 
+  style="display:none;" 
+  onload="document.getElementById('loadingMsg').style.display = 'none';"
+></iframe>
 
-    </div>
   </div>
+<script>
+  const form = document.querySelector('form');
+  const loadingMsg = document.getElementById('loadingMsg');
+
+  form.addEventListener('submit', () => {
+    loadingMsg.style.display = 'block';
+  });
+</script>
 
   <script>
     const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
