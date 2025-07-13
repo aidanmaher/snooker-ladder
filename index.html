@@ -21,6 +21,34 @@
       justify-content: center;
       padding: 20px;
     }
+    .nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.nav-links a {
+  padding: 10px 16px;
+  background: var(--green);
+  color: white;
+  font-weight: 500;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nav-links a:hover {
+  background: #005b46;
+}
+
+.admin-link {
+  background: #555;
+  font-size: 0.65rem;
+  padding: 6px 10px;
+}
+
     .club-logo {
   width: 120px;
   margin-bottom: 8px;
@@ -104,6 +132,16 @@
   <h1>🏆 A's & B's Ladder 🏆</h1>
 </div>
 
+<div class="nav-links">
+  <a href="challenge.html">Challenge Player</a>
+  <a href="ladder.html">View Ladder</a>
+  <a href="high-breaks.html">High Breaks</a>
+  <a href="stats.html">Stats</a>
+  <a href="rules.html">Rules</a>
+  <a href="admin.html" class="admin-link">Admin</a>
+</div>
+
+  
   <p>Track your matches, log scores, and rise through the rankings. Ready to submit today’s victory?</p>
   <a href="match_submit.html" class="btn">Submit a Match</a>
 </div>
