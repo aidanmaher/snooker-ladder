@@ -151,6 +151,48 @@
     }
   </style>
 </head>
+
+<script>
+  function autoSetWinner() {
+    const framesA = parseInt(document.getElementById('framesA').value, 10);
+    const framesB = parseInt(document.getElementById('framesB').value, 10);
+    const playerA = document.getElementById('playerA').value;
+    const playerB = document.getElementById('playerB').value;
+    const winner  = document.getElementById('winner');
+
+    if (!playerA || !playerB || isNaN(framesA) || isNaN(framesB)) {
+      winner.innerHTML = '<option disabled selected>Select…</option>';
+      return;
+    }
+
+    let autoWinner = framesA > framesB ? playerA :
+                     framesB > framesA ? playerB : '';
+
+    winner.innerHTML = '';
+
+    if (autoWinner) {
+      const opt = document.createElement('option');
+      opt.value = autoWinner;
+      opt.textContent = autoWinner + ' (auto)';
+      opt.selected = true;
+      winner.appendChild(opt);
+    } else {
+      const opt = document.createElement('option');
+      opt.disabled = true;
+      opt.textContent = 'Draw (please resolve)';
+      opt.selected = true;
+      winner.appendChild(opt);
+    }
+  }
+
+  document.getElementById('framesA').addEventListener('input', autoSetWinner);
+  document.getElementById('framesB').addEventListener('input', autoSetWinner);
+  document.getElementById('playerA').addEventListener('change', autoSetWinner);
+  document.getElementById('playerB').addEventListener('change', autoSetWinner);
+</script>
+
+
+  
 <body>
   <div class="card">
     <div class="card-header">🎱 Record a Match 🎱</div>
@@ -174,16 +216,16 @@
   <select name="winner" id="winner"><option>Loading…</option></select>
 
   <label for="framesA">Frames Player A</label>
-  <input type="number" name="framesA" id="framesA" />
+  <input type="number" name="framesA" id="framesA" min="0" required />
 
   <label for="framesB">Frames Player B</label>
-  <input type="number" name="framesB" id="framesB" />
+  <input type="number" name="framesB" id="framesB" min="0" required />
 
   <label for="pointsA">Total Points Player A</label>
-  <input type="number" name="pointsA" id="pointsA" />
+  <input type="number" name="pointsA" id="pointsA" min="1" required />
 
   <label for="pointsB">Total Points Player B</label>
-  <input type="number" name="pointsB" id="pointsB" />
+  <input type="number" name="pointsB" id="pointsB" min="1" required />
 
   <label for="highBreakA">High Break Player A</label>
   <input type="number" name="highBreakA" id="highBreakA" />
