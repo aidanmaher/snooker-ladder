@@ -46,14 +46,19 @@
   background: #005b46;
 }
 
-.admin-link {
+.nav-links a.admin-link {
+  width: 80px;               /* reduced width */
   background: #aaa;
   font-size: 0.65rem;
   padding: 6px 10px;
-  width: 100px;
   text-align: center;
   position: relative;
+  align-self: center;
 }
+.nav-links a.admin-link:hover {
+  background: #888;
+}
+
 
 /* Show 🔒 on hover */
 .admin-link::after {
