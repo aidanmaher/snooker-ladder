@@ -155,44 +155,45 @@
   <div class="card">
     <div class="card-header">🎱 Record a Match 🎱</div>
     <div class="card-body">
-      <form 
-        id="matchForm" 
-        method="post" 
-        action="https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec" 
-        target="submitFrame"
-      >
-        <label for="playerA">Player A</label>
-        <select name="playerA" id="playerA"><option>Loading…</option></select>
+<form 
+  id="matchForm" 
+  method="post" 
+  action="https://script.google.com/macros/s/AKfycbwv9Yh_TK-KCwv64X0p0z8WQMAwfcgJJLP-RXvJyAxoveAIMz0hX67sOh-Bx_UIeFBi/exec" 
+  target="submitFrame"
+>
+  <label for="playerA">Player A</label>
+  <select name="playerA" id="playerA"><option>Loading…</option></select>
 
-        <label for="playerB">Player B</label>
-        <select name="playerB" id="playerB"><option>Loading…</option></select>
+  <label for="playerB">Player B</label>
+  <select name="playerB" id="playerB"><option>Loading…</option></select>
 
-        <label for="matchDate">Match Date</label>
-        <input type="date" name="matchDate" id="matchDate" required />
+  <label for="matchDate">Match Date</label>
+  <input type="date" name="matchDate" id="matchDate" required />
 
-        <label for="winner">Winner</label>
-        <select name="winner" id="winner"><option>Loading…</option></select>
+  <label for="winner">Winner</label>
+  <select name="winner" id="winner"><option>Loading…</option></select>
 
-        <label for="framesA">Frames Player A</label>
-        <input type="number" name="framesA" id="framesA" />
+  <label for="framesA">Frames Player A</label>
+  <input type="number" name="framesA" id="framesA" />
 
-        <label for="framesB">Frames Player B</label>
-        <input type="number" name="framesB" id="framesB" />
+  <label for="framesB">Frames Player B</label>
+  <input type="number" name="framesB" id="framesB" />
 
-        <label for="pointsA">Total Points Player A</label>
-        <input type="number" name="pointsA" id="pointsA" />
+  <label for="pointsA">Total Points Player A</label>
+  <input type="number" name="pointsA" id="pointsA" />
 
-        <label for="pointsB">Total Points Player B</label>
-        <input type="number" name="pointsB" id="pointsB" />
+  <label for="pointsB">Total Points Player B</label>
+  <input type="number" name="pointsB" id="pointsB" />
 
-        <label for="highBreakA">High Break Player A</label>
-        <input type="number" name="highBreakA" id="highBreakA" />
+  <label for="highBreakA">High Break Player A</label>
+  <input type="number" name="highBreakA" id="highBreakA" />
 
-        <label for="highBreakB">High Break Player B</label>
-        <input type="number" name="highBreakB" id="highBreakB" />
+  <label for="highBreakB">High Break Player B</label>
+  <input type="number" name="highBreakB" id="highBreakB" />
 
-        <button type="submit">Submit Match</button>
-      </form>
+  <button type="submit">Submit Match</button>
+</form>
+
 
       <div id="loadingMsg" class="loading" style="display:none;">
         Submitting match<span class="dots"></span>
