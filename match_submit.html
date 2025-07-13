@@ -131,6 +131,29 @@
         <button type="submit">Submit Match</button>
       </form>
 
+ <div id="loadingMsg" class="loading" style="display:none;"> 
+   Submitting match<span class="dots"></span> 
+ </div> 
+      
+      <div id="confirmation" class="bounce"> 
+        <div class="cue-ball"></div> 
+        <div class="text">✅ Match Logged!</div> 
+      </div> 
+      
+      <iframe 
+        name="submitFrame" 
+        style="display:none;" 
+        onload=" if (window.formSubmitted) { document.getElementById('loadingMsg').style.display = 'none'; 
+                                            document.getElementById('matchForm').reset(); 
+                                            const conf = document.getElementById('confirmation'); 
+                                            conf.style.display = 'flex'; 
+                                            conf.classList.remove('bounce'); void conf.offsetWidth; 
+                                            conf.classList.add('bounce'); 
+                                            setTimeout(() => conf.style.display = 'none', 2500); 
+                                            window.formSubmitted = false; 
+                                           } " >
+                                           </iframe>
+      
       <a href="index.html" class="btn-back">⬅️ Back to Home</a>
     </div>
   </div>
