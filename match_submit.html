@@ -87,220 +87,121 @@
     .btn-back:hover {
       background: #005b46;
     }
-    .loading {
-      margin-top: 20px;
-      padding: 12px;
-      background: #fff9e6;
-      border-left: 4px solid #ffaa00;
-      font-weight: 500;
-      text-align: center;
-      border-radius: var(--radius);
-      font-size: 0.95rem;
-    }
-    .dots::after {
-      content: '';
-      display: inline-block;
-      width: 1em;
-      text-align: left;
-      animation: dots 1.5s steps(4, end) infinite;
-    }
-    @keyframes dots {
-      0% { content: ''; }
-      25% { content: '.'; }
-      50% { content: '..'; }
-      75% { content: '...'; }
-      100% { content: ''; }
-    }
-    #confirmation {
-      margin-top: 20px;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      color: #007a5e;
-      font-size: 1rem;
-      display: none;
-    }
-    .cue-ball {
-      width: 30px;
-      height: 30px;
-      background: #fff;
-      border: 2px solid #ccc;
-      border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-    .text {
-      animation: glowText 1s ease-in-out forwards;
-    }
-    .bounce .cue-ball {
-      animation: bounceBall 0.6s ease-out;
-    }
-    .bounce .text {
-      animation: glowText 0.8s ease-in-out;
-    }
-    @keyframes bounceBall {
-      0%   { transform: translateY(0) scale(1); }
-      30%  { transform: translateY(-30px) scale(1.1); }
-      60%  { transform: translateY(-15px) scale(0.95); }
-      100% { transform: translateY(0) scale(1); }
-    }
-    @keyframes glowText {
-      0%   { opacity: 0; transform: scale(0.9); }
-      40%  { opacity: 1; transform: scale(1.05); }
-      100% { opacity: 1; transform: scale(1); }
-    }
   </style>
 </head>
-
-<script>
-  function autoSetWinner() {
-    const framesA = parseInt(document.getElementById('framesA').value, 10);
-    const framesB = parseInt(document.getElementById('framesB').value, 10);
-    const playerA = document.getElementById('playerA').value;
-    const playerB = document.getElementById('playerB').value;
-    const winner  = document.getElementById('winner');
-
-    if (!playerA || !playerB || isNaN(framesA) || isNaN(framesB)) {
-      winner.innerHTML = '<option disabled selected>Select…</option>';
-      return;
-    }
-
-    let autoWinner = framesA > framesB ? playerA :
-                     framesB > framesA ? playerB : '';
-
-    winner.innerHTML = '';
-
-    if (autoWinner) {
-      const opt = document.createElement('option');
-      opt.value = autoWinner;
-      opt.textContent = autoWinner + ' (auto)';
-      opt.selected = true;
-      winner.appendChild(opt);
-    } else {
-      const opt = document.createElement('option');
-      opt.disabled = true;
-      opt.textContent = 'Draw (please resolve)';
-      opt.selected = true;
-      winner.appendChild(opt);
-    }
-  }
-
-  document.getElementById('framesA').addEventListener('input', autoSetWinner);
-  document.getElementById('framesB').addEventListener('input', autoSetWinner);
-  document.getElementById('playerA').addEventListener('change', autoSetWinner);
-  document.getElementById('playerB').addEventListener('change', autoSetWinner);
-</script>
-
-
-  
 <body>
   <div class="card">
     <div class="card-header">🎱 Record a Match 🎱</div>
     <div class="card-body">
-<form 
-  id="matchForm" 
-  method="post" 
-  action="https://script.google.com/macros/s/AKfycbzcU8VuFeH0Yl7TlXuo2Ipibx5S26CpXV_YyBtrMHojM-bW4mbBqV3oMd4duNhpIV4w/exec" 
-  target="submitFrame"
->
-  <label for="playerA">Player A</label>
-  <select name="playerA" id="playerA"><option>Loading…</option></select>
+      <form 
+        id="matchForm" 
+        method="post" 
+        action="https://script.google.com/macros/s/YOUR_APPS_SCRIPT_ID_HERE/exec"
+      >
+        <label for="playerA">Player A</label>
+        <select name="playerA" id="playerA" required><option>Loading…</option></select>
 
-  <label for="playerB">Player B</label>
-  <select name="playerB" id="playerB"><option>Loading…</option></select>
+        <label for="playerB">Player B</label>
+        <select name="playerB" id="playerB" required><option>Loading…</option></select>
 
-  <label for="matchDate">Match Date</label>
-  <input type="date" name="matchDate" id="matchDate" required />
+        <label for="matchDate">Match Date</label>
+        <input type="date" name="matchDate" id="matchDate" required />
 
-  <label for="winner">Winner</label>
-  <select name="winner" id="winner"><option>Loading…</option></select>
+        <label for="winner">Winner</label>
+        <select name="winner" id="winner" required><option>Select…</option></select>
 
-  <label for="framesA">Frames Player A</label>
-  <input type="number" name="framesA" id="framesA" min="0" required />
+        <label for="framesA">Frames Player A</label>
+        <input type="number" name="framesA" id="framesA" min="0" required />
 
-  <label for="framesB">Frames Player B</label>
-  <input type="number" name="framesB" id="framesB" min="0" required />
+        <label for="framesB">Frames Player B</label>
+        <input type="number" name="framesB" id="framesB" min="0" required />
 
-  <label for="pointsA">Total Points Player A</label>
-  <input type="number" name="pointsA" id="pointsA" min="1" required />
+        <label for="pointsA">Total Points Player A</label>
+        <input type="number" name="pointsA" id="pointsA" min="0" required />
 
-  <label for="pointsB">Total Points Player B</label>
-  <input type="number" name="pointsB" id="pointsB" min="1" required />
+        <label for="pointsB">Total Points Player B</label>
+        <input type="number" name="pointsB" id="pointsB" min="0" required />
 
-  <label for="highBreakA">High Break Player A</label>
-  <input type="number" name="highBreakA" id="highBreakA" />
+        <label for="highBreakA">High Break Player A</label>
+        <input type="number" name="highBreakA" id="highBreakA" />
 
-  <label for="highBreakB">High Break Player B</label>
-  <input type="number" name="highBreakB" id="highBreakB" />
+        <label for="highBreakB">High Break Player B</label>
+        <input type="number" name="highBreakB" id="highBreakB" />
 
-  <button type="submit">Submit Match</button>
-</form>
-
-
-      <div id="loadingMsg" class="loading" style="display:none;">
-        Submitting match<span class="dots"></span>
-      </div>
-
-      <div id="confirmation" class="bounce">
-        <div class="cue-ball"></div>
-        <div class="text">✅ Match Logged!</div>
-      </div>
-
-      <iframe 
-        name="submitFrame" 
-        style="display:none;" 
-        onload="
-          if (window.formSubmitted) {
-            document.getElementById('loadingMsg').style.display = 'none';
-            document.getElementById('matchForm').reset();
-            const conf = document.getElementById('confirmation');
-            conf.style.display = 'flex';
-            conf.classList.remove('bounce'); void conf.offsetWidth; conf.classList.add('bounce');
-            setTimeout(() => conf.style.display = 'none', 2500);
-            window.formSubmitted = false;
-          }
-        "
-      ></iframe>
+        <button type="submit">Submit Match</button>
+      </form>
 
       <a href="index.html" class="btn-back">⬅️ Back to Home</a>
     </div>
   </div>
 
   <script>
-    window.formSubmitted = false;
-
-    document.getElementById('matchForm').addEventListener('submit', () => {
-      window.formSubmitted = true;
-      document.getElementById('loadingMsg').style.display = 'block';
-    });
-
     const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
     const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Players&headers=1&tqx=responseHandler:populateNames`;
     const selA = document.getElementById('playerA');
     const selB = document.getElementById('playerB');
     const selW = document.getElementById('winner');
 
-  function populateNames(resp) {
-    const cols = resp.table.cols.map(c => c.label);
-    const rows = resp.table.rows.map(r => r.c.map(c => c?.v));
-    const nameIdx = cols.indexOf('Name');
-    [selA, selB, selW].forEach(sel => {
-      sel.innerHTML = '<option disabled selected>Select…</option>';
-      rows.forEach(row => {
-        const name = row[nameIdx];
-        if (name) {
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          sel.appendChild(opt);
-        }
+    function populateNames(resp) {
+      const cols = resp.table.cols.map(c => c.label);
+      const rows = resp.table.rows.map(r => r.c.map(c => c?.v));
+      const nameIdx = cols.indexOf('Name');
+      [selA, selB, selW].forEach(sel => {
+        sel.innerHTML = '<option disabled selected>Select…</option>';
+        rows.forEach(row => {
+          const name = row[nameIdx];
+          if (name) {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            sel.appendChild(opt);
+          }
+        });
       });
-    });
-  }
+    }
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const script = document.createElement('script');
-    script.src = JSONP_URL;
-    document.body.appendChild(script);
-  });
-</script>
+    function autoSetWinner() {
+      const framesA = parseInt(document.getElementById('framesA').value, 10);
+      const framesB = parseInt(document.getElementById('framesB').value, 10);
+      const playerA = document.getElementById('playerA').value;
+      const playerB = document.getElementById('playerB').value;
+      const winner  = document.getElementById('winner');
+
+      if (!playerA || !playerB || isNaN(framesA) || isNaN(framesB)) {
+        winner.innerHTML = '<option disabled selected>Select…</option>';
+        return;
+      }
+
+      let autoWinner = framesA > framesB ? playerA :
+                       framesB > framesA ? playerB : '';
+
+      winner.innerHTML = '';
+
+      if (autoWinner) {
+        const opt = document.createElement('option');
+        opt.value = autoWinner;
+        opt.textContent = autoWinner + ' (auto)';
+        opt.selected = true;
+        winner.appendChild(opt);
+      } else {
+        const opt = document.createElement('option');
+        opt.disabled = true;
+        opt.textContent = 'Draw (please resolve)';
+        opt.selected = true;
+        winner.appendChild(opt);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const script = document.createElement('script');
+      script.src = JSONP_URL;
+      document.body.appendChild(script);
+
+      document.getElementById('framesA').addEventListener('input', autoSetWinner);
+      document.getElementById('framesB').addEventListener('input', autoSetWinner);
+      document.getElementById('playerA').addEventListener('change', autoSetWinner);
+      document.getElementById('playerB').addEventListener('change', autoSetWinner);
+    });
+  </script>
+</body>
+</html>
