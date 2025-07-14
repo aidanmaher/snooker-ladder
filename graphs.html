@@ -95,56 +95,74 @@
         });
     }
 
-    function processMatchData(rows) {
-      const stats = {};
+function processMatchData(rows) {
+  const stats = {};
 
-      rows.forEach(row => {
-        const playerA = row[1];
-        const playerB = row[2];
-        const winner  = row[3];
-        const pointsA = parseInt(row[6]) || 0;
-        const pointsB = parseInt(row[7]) || 0;
+  rows.forEach(row => {
+    const playerA = row[1];
+    const playerB = row[2];
+    const winner  = row[3];
+    const pointsA = parseInt(row[6]) || 0;
+    const pointsB = parseInt(row[7]) || 0;
+    const framesA = parseInt(row[4]) || 0;
+    const framesB = parseInt(row[5]) || 0;
 
-        [playerA, playerB].forEach(p => {
-          if (!stats[p]) stats[p] = { played: 0, won: 0, totalPoints: 0 };
-          stats[p].played++;
-        });
+    [playerA, playerB].forEach(p => {
+      if (!stats[p]) stats[p] = { played: 0, won: 0, totalPoints: 0, totalFrames: 0 };
+      stats[p].played++;
+    });
 
-        if (winner && stats[winner]) {
-          stats[winner].won++;
-        }
-
-        stats[playerA].totalPoints += pointsA;
-        stats[playerB].totalPoints += pointsB;
-      });
-
-      drawWinRateChart(stats);
-      drawAvgPointsChart(stats);
-      drawActivityChart(stats);
+    if (winner && stats[winner]) {
+      stats[winner].won++;
     }
 
-    function drawWinRateChart(stats) {
-      const dataArray = [['Player', 'Win Rate %']];
-      for (let player in stats) {
-        const winRate = (stats[player].won / stats[player].played) * 100;
-        dataArray.push([player, Math.round(winRate)]);
-      }
+    stats[playerA].totalPoints += pointsA;
+    stats[playerB].totalPoints += pointsB;
 
-      const data = google.visualization.arrayToDataTable(dataArray);
-      const options = {
-        legend: { position: 'none' },
-        hAxis: { title: 'Win Rate (%)', minValue: 0, maxValue: 100 },
-        colors: ['#007a5e']
-      };
-      new google.visualization.BarChart(document.getElementById('winRateChart')).draw(data, options);
-    }
+    stats[playerA].totalFrames += framesA;
+    stats[playerB].totalFrames += framesB;
+  });
 
-    function drawAvgPointsChart(stats) {
-      const dataArray = [['Player', 'Avg Points']];
-      for (let player in stats) {
-        const avgPoints = stats[player].totalPoints / stats[player].played;
-        dataArray.push([player, Math.round(avgPoints)]);
-      }
+  drawWinRateChart(stats);
+  drawAvgPointsChart(stats);
+  drawFunnelChart(stats);
+}
+
+function drawAvgPointsChart(stats) {
+  const dataArray = [['Player', 'Avg Points per Frame']];
+  for (let player in stats) {
+    const avg = stats[player].totalFrames > 0
+      ? stats[player].totalPoints / stats[player].totalFrames
+      : 0;
+    dataArray.push([player, Math.round(avg)]);
+  }
+
+  const data = google.visualization.arrayToDataTable(dataArray);
+  const options = {
+    legend: { position: 'none' },
+    hAxis: { title: 'Avg Points per Frame' },
+    colors: ['#aa0000']
+  };
+  new google.visualization.ColumnChart(document.getElementById('avgPointsChart')).draw(data, options);
+}
+
+function drawFunnelChart(stats) {
+  const dataArray = [['Player', 'Matches Played']];
+  for (let player in stats) {
+    dataArray.push([player, stats[player].played]);
+  }
+
+  dataArray.sort((a, b) => b[1] - a[1]); // descending for funnel shape
+
+  const data = google.visualization.arrayToDataTable(dataArray);
+  const options = {
+    legend: { position: 'none' },
+    hAxis: { title: 'Matches Played' },
+    colors: ['#4444cc']
+  };
+  new google.visualization.BarChart(document.getElementById('activityChart')).draw(data, options);
+}
+
 
       const data = google.visualization.arrayToDataTable(dataArray);
       const options = {
