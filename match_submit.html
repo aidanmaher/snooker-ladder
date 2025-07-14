@@ -152,47 +152,7 @@
   </style>
 </head>
 
-<script>
-  function autoSetWinner() {
-    const framesA = parseInt(document.getElementById('framesA').value, 10);
-    const framesB = parseInt(document.getElementById('framesB').value, 10);
-    const playerA = document.getElementById('playerA').value;
-    const playerB = document.getElementById('playerB').value;
-    const winner  = document.getElementById('winner');
-
-    if (!playerA || !playerB || isNaN(framesA) || isNaN(framesB)) {
-      winner.innerHTML = '<option disabled selected>Select…</option>';
-      return;
-    }
-
-    let autoWinner = framesA > framesB ? playerA :
-                     framesB > framesA ? playerB : '';
-
-    winner.innerHTML = '';
-
-    if (autoWinner) {
-      const opt = document.createElement('option');
-      opt.value = autoWinner;
-      opt.textContent = autoWinner + ' (auto)';
-      opt.selected = true;
-      winner.appendChild(opt);
-    } else {
-      const opt = document.createElement('option');
-      opt.disabled = true;
-      opt.textContent = 'Draw (please resolve)';
-      opt.selected = true;
-      winner.appendChild(opt);
-    }
-  }
-
-  document.getElementById('framesA').addEventListener('input', autoSetWinner);
-  document.getElementById('framesB').addEventListener('input', autoSetWinner);
-  document.getElementById('playerA').addEventListener('change', autoSetWinner);
-  document.getElementById('playerB').addEventListener('change', autoSetWinner);
-</script>
-
-
-  
+ 
 <body>
   <div class="card">
     <div class="card-header">🎱 Record Match 🎱</div>
@@ -298,9 +258,48 @@
     });
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const script = document.createElement('script');
-    script.src = JSONP_URL;
-    document.body.appendChild(script);
-  });
-</script>
+    function autoSetWinner() {
+      const framesA = parseInt(document.getElementById('framesA').value, 10);
+      const framesB = parseInt(document.getElementById('framesB').value, 10);
+      const playerA = document.getElementById('playerA').value;
+      const playerB = document.getElementById('playerB').value;
+      const winner  = document.getElementById('winner');
+
+      if (!playerA || !playerB || isNaN(framesA) || isNaN(framesB)) {
+        winner.innerHTML = '<option disabled selected>Select…</option>';
+        return;
+      }
+
+      let autoWinner = framesA > framesB ? playerA :
+                       framesB > framesA ? playerB : '';
+
+      winner.innerHTML = '';
+
+      if (autoWinner) {
+        const opt = document.createElement('option');
+        opt.value = autoWinner;
+        opt.textContent = autoWinner + ' (auto)';
+        opt.selected = true;
+        winner.appendChild(opt);
+      } else {
+        const opt = document.createElement('option');
+        opt.disabled = true;
+        opt.textContent = 'Draw (please resolve)';
+        opt.selected = true;
+        winner.appendChild(opt);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const script = document.createElement('script');
+      script.src = JSONP_URL;
+      document.body.appendChild(script);
+
+      document.getElementById('framesA').addEventListener('input', autoSetWinner);
+      document.getElementById('framesB').addEventListener('input', autoSetWinner);
+      document.getElementById('playerA').addEventListener('change', autoSetWinner);
+      document.getElementById('playerB').addEventListener('change', autoSetWinner);
+    });
+  </script>
+</body>
+</html>
