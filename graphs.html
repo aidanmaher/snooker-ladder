@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Snooker Club – Stats & Graphs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #007a5e;
+      --gray: #333;
+      --bg: #f9f9f9;
+      --radius: 6px;
+    }
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--gray);
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--green);
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    .chart-container {
+      margin-bottom: 50px;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+      color: var(--green);
+    }
+    #back-btn {
+      display: block;
+      margin: 40px auto 0;
+      text-align: center;
+      background: var(--green);
+      color: #fff;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      max-width: 240px;
+    }
+    #back-btn:hover {
+      background: #005b46;
+    }
+  </style>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <div class="header">📊 Snooker Club Match Stats</div>
+
+  <div class="chart-container">
+    <div class="chart-title">Frames Won per Player</div>
+    <div id="barChart" style="width: 100%; height: 400px;"></div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">Total Points Over Time</div>
+    <div id="lineChart" style="width: 100%; height: 400px;"></div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">Win Distribution</div>
+    <div id="pieChart" style="width: 100%; height: 400px;"></div>
+  </div>
+
+  <a id="back-btn" href="index.html">⬅️ Back to Home</a>
+
+  <script>
+    const SHEET_ID = '1NfhyijTdd1FIlYOf0dgKHThB8QqFAsh__dpj6zUoSkc';
+    const RANGE = 'Match Results!A2:K';
+    const queryURL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Match%20Results&tqx=out:json`;
+
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(fetchData);
+
+    function fetchData() {
+      fetch(queryURL)
+        .then(res => res.text())
+        .then(text => {
+          const json = JSON.parse(text.substr(47).slice(0, -2));
+          const rows = json.table.rows.map(r => r.c.map(c => c?.v));
+          renderCharts(rows);
+        });
+    }
+
+    function renderCharts(rows) {
+      const playerStats = {};
+      const pointsTimeline = [];
+      const winCounts = {};
+
+      rows.forEach(row => {
+        const date = new Date(row[0]);
+        const playerA = row[1];
+        const playerB = row[2];
+        const winner = row[3];
+        const framesA = parseInt(row[4]) || 0;
+        const framesB = parseInt(row[5]) || 0;
+        const pointsA = parseInt(row[6]) || 0;
+        const pointsB = parseInt(row[7]) || 0;
+
+        // Frames chart
+        playerStats[playerA] = (playerStats[playerA] || 0) + framesA;
+        playerStats[playerB] = (playerStats[playerB] || 0) + framesB;
+
+        // Line chart
+        pointsTimeline.push([date, playerA, pointsA]);
+        pointsTimeline.push([date, playerB, pointsB]);
+
+        // Pie chart
+        if (winner) {
+          winCounts[winner] = (winCounts[winner] || 0) + 1;
+        }
+      });
+
+      drawBarChart(playerStats);
+      drawLineChart(pointsTimeline);
+      drawPieChart(winCounts);
+    }
+
+    function drawBarChart(dataObj) {
+      const dataArray = [['Player', 'Frames Won']];
+      for (let player in dataObj) {
+        dataArray.push([player, dataObj[player]]);
+      }
+
+      const data = google.visualization.arrayToDataTable(dataArray);
+      const options = {
+        legend: { position: 'none' },
+        hAxis: { title: 'Frames Won' },
+        vAxis: { title: 'Players' },
+        colors: ['#007a5e']
+      };
+      const chart = new google.visualization.BarChart(document.getElementById('barChart'));
+      chart.draw(data, options);
+    }
+
+    function drawLineChart(dataPoints) {
+      const playerMap = {};
+
+      dataPoints.forEach(([date, player, points]) => {
+        const key = date.toDateString();
+        if (!playerMap[key]) playerMap[key] = {};
+        playerMap[key][player] = (playerMap[key][player] || 0) + points;
+      });
+
+      const players = [...new Set(dataPoints.map(d => d[1]))];
+      const header = ['Date', ...players];
+      const rows = [];
+
+      for (let date in playerMap) {
+        const row = [new Date(date)];
+        players.forEach(p => row.push(playerMap[date][p] || 0));
+        rows.push(row);
+      }
+
+      rows.sort((a, b) => a[0] - b[0]);
+      const data = google.visualization.arrayToDataTable([header, ...rows]);
+
+      const options = {
+        curveType: 'function',
+        legend: { position: 'bottom' },
+        colors: ['#007a5e', '#aa0000', '#4444cc', '#ff9900']
+      };
+      const chart = new google.visualization.LineChart(document.getElementById('lineChart'));
+      chart.draw(data, options);
+    }
+
+    function drawPieChart(dataObj) {
+      const dataArray = [['Player', 'Wins']];
+      for (let player in dataObj) {
+        dataArray.push([player, dataObj[player]]);
+      }
+
+      const data = google.visualization.arrayToDataTable(dataArray);
+      const options = {
+        pieHole: 0.4,
+        colors: ['#007a5e', '#aa0000', '#4444cc', '#ff9900']
+      };
+      const chart = new google.visualization.PieChart(document.getElementById('pieChart'));
+      chart.draw(data, options);
+    }
+  </script>
+</body>
+</html>
