@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Snooker Club – Stats Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #007a5e;
+      --gray: #333;
+      --bg: #f9f9f9;
+      --radius: 6px;
+    }
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--gray);
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--green);
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    .dashboard-container {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto 50px;
+    }
+    .dashboard-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--green);
+    }
+    iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+      border-radius: var(--radius);
+    }
+    #back-btn {
+      display: block;
+      margin: 0 auto;
+      text-align: center;
+      background: var(--green);
+      color: #fff;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      max-width: 240px;
+      transition: background .2s;
+    }
+    #back-btn:hover {
+      background: #005b46;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">📊 Snooker Club Stats Dashboard</div>
+
+  <div class="dashboard-container">
+    <div class="dashboard-title">Live Interactive Dashboard</div>
+    <iframe
+      src="https://lookerstudio.google.com/embed/reporting/f4e9ea80-a42a-437c-8b24-86b2f97af5fa/page/eBnRF"
+      allowfullscreen
+      sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+    ></iframe>
+  </div>
+
+  <a id="back-btn" href="index.html">⬅️ Back to Home</a>
+</body>
+</html>
