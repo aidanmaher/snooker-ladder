@@ -1,75 +1,126 @@
 /* styles.css */
 
-/* 🌈 Color & Typography Variables */
+/* 🌈 Variables & Fonts */
 :root {
-  --primary-color: #2c3e50;
-  --accent-color: #3498db;
-  --background-color: #f4f4f4;
-  --font-main: 'Segoe UI', sans-serif;
+  --green: #007a5e;
+  --gray: #555;
+  --bg: #f9f9f9;
+  --radius: 6px;
 }
 
-/* 🧼 Global Reset & Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* 🧼 Base Styles */
 body {
-  font-family: var(--font-main);
-  background-color: var(--background-color);
-  color: var(--primary-color);
-  line-height: 1.6;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background: var(--bg);
+  color: var(--gray);
+  display: flex;
+  justify-content: center;
   padding: 20px;
 }
 
-/* 🧩 Layout Components */
-.header {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 10px;
+/* 🖼 Logo */
+.club-logo {
+  width: 180px;
+  margin-bottom: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 🧊 Card Container */
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 480px;
+  width: 100%;
   text-align: center;
+  padding: 32px 24px;
+}
+
+.card h1 {
+  font-size: 1.8rem;
+  color: var(--green);
+  margin-bottom: 16px;
+}
+
+.card p {
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+/* 🚪 Navigation Links */
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
 }
 
 .nav-links a {
-  margin: 0 10px;
-  color: white;
-  text-decoration: none;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
-}
-
-/* 🎯 Form Styling */
-input, select, button {
-  font: inherit;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  background-color: var(--accent-color);
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #2980b9;
-}
-
-/* 🛠 Utility Classes */
-.hidden {
-  display: none;
-}
-
-.center {
+  display: block;
+  width: 200px;
   text-align: center;
+  padding: 10px 16px;
+  background: var(--green);
+  color: white;
+  font-weight: 500;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nav-links a:hover {
+  background: #005b46;
+}
+
+/* 🔐 Admin Link */
+.nav-links a.admin-link {
+  width: 80px;
+  background: #aaa;
+  font-size: 0.65rem;
+  padding: 6px 10px;
+  text-align: center;
+  position: relative;
+  align-self: center;
+}
+
+.nav-links a.admin-link:hover {
+  background: #888;
+}
+
+.admin-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.admin-link:hover::after {
+  content: '🔒';
+  opacity: 1;
+}
+
+/* 🎯 CTA Button */
+.btn {
+  display: inline-block;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--green);
+  border: none;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #005b46;
 }
