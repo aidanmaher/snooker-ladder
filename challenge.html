@@ -2,44 +2,47 @@
 <html>
 <head>
   <title>Issue a Challenge</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 30px; }
-    label { font-weight: bold; display: block; margin-top: 15px; }
-    select, input[type="text"], textarea, button {
-      width: 100%; padding: 8px; margin-top: 5px; font-size: 16px;
-    }
-    .warning { color: red; margin-top: 10px; display: none; }
-  </style>
+  <link rel="stylesheet" href="style.css"> <!-- Same CSS as match_submit.html -->
 </head>
 <body>
-  <h2>🏆 Issue a Challenge</h2>
+  <div class="container">
+    <h2 class="page-title">🏆 Issue a Challenge</h2>
 
-  <form id="challengeForm">
-    <label for="challenger">Your Name:</label>
-    <select id="challenger" name="challenger"></select>
+    <form id="challengeForm" class="form-section">
+      <div class="form-group">
+        <label for="challenger">Your Name:</label>
+        <select id="challenger" name="challenger" class="form-control"></select>
+      </div>
 
-    <label for="opponent">Opponent:</label>
-    <select id="opponent" name="opponent"></select>
-    <div id="activeWarning" class="warning">
-      ⚠️ This player is already under challenge, are you sure you wish to proceed?
-    </div>
+      <div class="form-group">
+        <label for="opponent">Opponent:</label>
+        <select id="opponent" name="opponent" class="form-control"></select>
+        <div id="activeWarning" class="form-warning hidden">
+          ⚠️ This player is already under challenge, are you sure you wish to proceed?
+        </div>
+      </div>
 
-    <label for="format">Match Format:</label>
-    <select id="format" name="format">
-      <option value="Best of 1">Best of 1 frame</option>
-      <option value="Best of 3">Best of 3 frames</option>
-    </select>
+      <div class="form-group">
+        <label for="format">Match Format:</label>
+        <select id="format" name="format" class="form-control">
+          <option value="Best of 1">Best of 1 frame</option>
+          <option value="Best of 3">Best of 3 frames</option>
+        </select>
+      </div>
 
-    <label for="notes">Notes (optional):</label>
-    <textarea id="notes" name="notes" rows="3"></textarea>
+      <div class="form-group">
+        <label for="notes">Notes (optional):</label>
+        <textarea id="notes" name="notes" rows="3" class="form-control"></textarea>
+      </div>
 
-    <button type="submit">Submit Challenge</button>
-  </form>
+      <button type="submit" class="btn-submit">Submit Challenge</button>
+    </form>
 
-  <div id="confirmation" style="margin-top:20px;"></div>
+    <div id="confirmation" class="confirmation-text"></div>
+  </div>
 
   <script>
-    // Dummy dropdown data - populate dynamically from sheet or ladder data
+    // Dummy data — this will be dynamic in production
     const players = ["Alice", "Bob", "Charlie", "David"];
     const dropdowns = ["challenger", "opponent"];
     dropdowns.forEach(id => {
@@ -59,15 +62,15 @@
       const format = document.getElementById("format").value;
       const notes = document.getElementById("notes").value;
 
-      // Check if opponent is already under challenge
+      // Challenge status check
       fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=checkChallenge&opponent=${opponent}`)
         .then(res => res.json())
         .then(data => {
           if (data.isChallenged) {
-            document.getElementById("activeWarning").style.display = "block";
-            // You could add a confirm() here to require user interaction
+            document.getElementById("activeWarning").classList.remove("hidden");
+            // Optional: prompt user to confirm
           } else {
-            document.getElementById("activeWarning").style.display = "none";
+            document.getElementById("activeWarning").classList.add("hidden");
             submitChallenge();
           }
         });
