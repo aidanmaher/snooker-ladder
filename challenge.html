@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Issue a Challenge</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    label { font-weight: bold; display: block; margin-top: 15px; }
+    select, input[type="text"], textarea, button {
+      width: 100%; padding: 8px; margin-top: 5px; font-size: 16px;
+    }
+    .warning { color: red; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+  <h2>🏆 Issue a Challenge</h2>
+
+  <form id="challengeForm">
+    <label for="challenger">Your Name:</label>
+    <select id="challenger" name="challenger"></select>
+
+    <label for="opponent">Opponent:</label>
+    <select id="opponent" name="opponent"></select>
+    <div id="activeWarning" class="warning">
+      ⚠️ This player is already under challenge, are you sure you wish to proceed?
+    </div>
+
+    <label for="format">Match Format:</label>
+    <select id="format" name="format">
+      <option value="Best of 1">Best of 1 frame</option>
+      <option value="Best of 3">Best of 3 frames</option>
+    </select>
+
+    <label for="notes">Notes (optional):</label>
+    <textarea id="notes" name="notes" rows="3"></textarea>
+
+    <button type="submit">Submit Challenge</button>
+  </form>
+
+  <div id="confirmation" style="margin-top:20px;"></div>
+
+  <script>
+    // Dummy dropdown data - populate dynamically from sheet or ladder data
+    const players = ["Alice", "Bob", "Charlie", "David"];
+    const dropdowns = ["challenger", "opponent"];
+    dropdowns.forEach(id => {
+      const select = document.getElementById(id);
+      players.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p; opt.textContent = p;
+        select.appendChild(opt);
+      });
+    });
+
+    document.getElementById("challengeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const challenger = document.getElementById("challenger").value;
+      const opponent = document.getElementById("opponent").value;
+      const format = document.getElementById("format").value;
+      const notes = document.getElementById("notes").value;
+
+      // Check if opponent is already under challenge
+      fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=checkChallenge&opponent=${opponent}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.isChallenged) {
+            document.getElementById("activeWarning").style.display = "block";
+            // You could add a confirm() here to require user interaction
+          } else {
+            document.getElementById("activeWarning").style.display = "none";
+            submitChallenge();
+          }
+        });
+
+      function submitChallenge() {
+        fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ challenger, opponent, format, notes })
+        })
+        .then(res => res.text())
+        .then(msg => {
+          document.getElementById("confirmation").innerHTML = `✅ Challenge submitted to ${opponent}!`;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
