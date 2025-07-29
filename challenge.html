@@ -42,14 +42,14 @@
   </div>
 
   <script>
-    // Dummy data — this will be dynamic in production
     const players = ["Alice", "Bob", "Charlie", "David"];
     const dropdowns = ["challenger", "opponent"];
     dropdowns.forEach(id => {
       const select = document.getElementById(id);
       players.forEach(p => {
         const opt = document.createElement("option");
-        opt.value = p; opt.textContent = p;
+        opt.value = p;
+        opt.textContent = p;
         select.appendChild(opt);
       });
     });
@@ -62,13 +62,12 @@
       const format = document.getElementById("format").value;
       const notes = document.getElementById("notes").value;
 
-      // Challenge status check
+      // Check if opponent is already challenged
       fetch(`https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec?action=checkChallenge&opponent=${opponent}`)
         .then(res => res.json())
         .then(data => {
           if (data.isChallenged) {
             document.getElementById("activeWarning").classList.remove("hidden");
-            // Optional: prompt user to confirm
           } else {
             document.getElementById("activeWarning").classList.add("hidden");
             submitChallenge();
@@ -76,16 +75,17 @@
         });
 
       function submitChallenge() {
-        fetch(`https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec`, {
+        fetch("https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec", {
           method: "POST",
           mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({ challenger, opponent, format, notes })
-        })
-        .then(res => res.text())
-        .then(msg => {
-          document.getElementById("confirmation").innerHTML = `✅ Challenge submitted to ${opponent}!`;
         });
+
+        // Since response is blocked, show confirmation manually
+        document.getElementById("confirmation").innerHTML = `✅ Challenge submitted to ${opponent}!`;
       }
     });
   </script>
