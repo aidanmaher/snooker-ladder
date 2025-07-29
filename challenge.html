@@ -63,7 +63,7 @@
       const notes = document.getElementById("notes").value;
 
       // Challenge status check
-      fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=checkChallenge&opponent=${opponent}`)
+      fetch(`https://script.google.com/macros/s/AKfycbzcU8VuFeH0Yl7TlXuo2Ipibx5S26CpXV_YyBtrMHojM-bW4mbBqV3oMd4duNhpIV4w/exec?action=checkChallenge&opponent=${opponent}`)
         .then(res => res.json())
         .then(data => {
           if (data.isChallenged) {
