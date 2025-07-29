@@ -6,7 +6,7 @@
 </head>
 <body>
   <div class="container">
-    <h2 class="page-title">🏆 Issue a Challenge 🏆</h2>
+    <h2 class="page-title">🏆 Issue Challenge 🏆</h2>
 
     <form id="challengeForm" class="form-section">
       <div class="form-group">
@@ -63,7 +63,7 @@
       const notes = document.getElementById("notes").value;
 
       // Check if opponent is already challenged
-      fetch(`https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec?action=checkChallenge&opponent=${opponent}`)
+      fetch("https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec?action=checkChallenge&opponent=${opponent}")
         .then(res => res.json())
         .then(data => {
           if (data.isChallenged) {
