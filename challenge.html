@@ -1,93 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Issue a Challenge</title>
-  <link rel="stylesheet" href="style.css"> <!-- Same CSS as match_submit.html -->
-</head>
-<body>
-  <div class="container">
-    <h2 class="page-title">🏆 Issue Challenge 🏆</h2>
+  <body>
+    <button onclick="sendTest()">Send Dummy Test</button>
 
-    <form id="challengeForm" class="form-section">
-      <div class="form-group">
-        <label for="challenger">Your Name:</label>
-        <select id="challenger" name="challenger" class="form-control"></select>
-      </div>
-
-      <div class="form-group">
-        <label for="opponent">Opponent:</label>
-        <select id="opponent" name="opponent" class="form-control"></select>
-        <div id="activeWarning" class="form-warning hidden">
-          ⚠️ This player is already under challenge, are you sure you wish to proceed?
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="format">Match Format:</label>
-        <select id="format" name="format" class="form-control">
-          <option value="Best of 1">Best of 1 frame</option>
-          <option value="Best of 3">Best of 3 frames</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="notes">Notes (optional):</label>
-        <textarea id="notes" name="notes" rows="3" class="form-control"></textarea>
-      </div>
-
-      <button type="submit" class="btn-submit">Submit Challenge</button>
-    </form>
-
-    <div id="confirmation" class="confirmation-text"></div>
-  </div>
-
-  <script>
-    const players = ["Alice", "Bob", "Charlie", "David"];
-    const dropdowns = ["challenger", "opponent"];
-    dropdowns.forEach(id => {
-      const select = document.getElementById(id);
-      players.forEach(p => {
-        const opt = document.createElement("option");
-        opt.value = p;
-        opt.textContent = p;
-        select.appendChild(opt);
-      });
-    });
-
-    document.getElementById("challengeForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const challenger = document.getElementById("challenger").value;
-      const opponent = document.getElementById("opponent").value;
-      const format = document.getElementById("format").value;
-      const notes = document.getElementById("notes").value;
-
-      // Check if opponent is already challenged
-      fetch("https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec?action=checkChallenge&opponent=${opponent}")
-        .then(res => res.json())
-        .then(data => {
-          if (data.isChallenged) {
-            document.getElementById("activeWarning").classList.remove("hidden");
-          } else {
-            document.getElementById("activeWarning").classList.add("hidden");
-            submitChallenge();
-          }
-        });
-
-      function submitChallenge() {
+    <script>
+      function sendTest() {
         fetch("https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec", {
           method: "POST",
           mode: "no-cors",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/x-www-form-urlencoded"
           },
-          body: JSON.stringify({ challenger, opponent, format, notes })
+          body: new URLSearchParams({
+            challenger: "Aidan",
+            opponent: "Bot",
+            format: "Best of 3",
+            notes: "Testing simplified form"
+          })
         });
-
-        // Since response is blocked, show confirmation manually
-        document.getElementById("confirmation").innerHTML = `✅ Challenge submitted to ${opponent}!`;
+        alert("Dummy submission sent!");
       }
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
