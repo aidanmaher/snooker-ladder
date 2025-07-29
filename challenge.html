@@ -78,6 +78,7 @@
       function submitChallenge() {
         fetch(`https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec`, {
           method: "POST",
+          mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ challenger, opponent, format, notes })
         })
