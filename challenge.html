@@ -63,7 +63,7 @@
       const notes = document.getElementById("notes").value;
 
       // Challenge status check
-      fetch(`https://script.google.com/macros/s/AKfycbzcU8VuFeH0Yl7TlXuo2Ipibx5S26CpXV_YyBtrMHojM-bW4mbBqV3oMd4duNhpIV4w/exec?action=checkChallenge&opponent=${opponent}`)
+      fetch(`https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec?action=checkChallenge&opponent=${opponent}`)
         .then(res => res.json())
         .then(data => {
           if (data.isChallenged) {
@@ -76,7 +76,7 @@
         });
 
       function submitChallenge() {
-        fetch(`https://script.google.com/macros/s/AKfycbzcU8VuFeH0Yl7TlXuo2Ipibx5S26CpXV_YyBtrMHojM-bW4mbBqV3oMd4duNhpIV4w/exec`, {
+        fetch(`https://script.google.com/macros/s/AKfycbweppdhwMjn_5pmQR9zUUS4t9W1nu7rnGMnk8XmgXxFAWK2KsmKKDSe6Ym9A1IyYxPg/exec`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ challenger, opponent, format, notes })
